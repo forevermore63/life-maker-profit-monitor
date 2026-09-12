@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Life Maker · Profit Monitor</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header>
+    <div class="brand">FOREVERMORE · LIFE MAKER</div>
+    <nav class="row">
+      <a class="btn ghost" href="feel.html">Human Feel</a>
+      <a class="btn" href="campaigns.html">Paid Campaigns</a>
+    </nav>
+  </header>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card">
+        <div class="k">Endless money pool · peaceful balance</div>
+        <h1 class="h">Master Life Maker Profit Monitor</h1>
+        <p class="p">Ten live revenue engines feeding one command deck. Toggle human-feel softness, push paid campaigns, and watch the pool compound toward a quieter world.</p>
+        <div class="row">
+          <div><div class="k">Pool today (demo + live inputs)</div><div class="num" id="pool">$0</div></div>
+          <div><div class="k">Daily run-rate</div><div class="num" id="rate">$0</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="k">Human feel</div>
+        <p class="p" id="feelLine">Warm light, slower pulse, kinder copy.</p>
+        <label>Softness <input id="soft" type="range" min="0" max="100" value="72"></label>
+        <label>Chime volume <input id="vol" type="range" min="0" max="100" value="40"></label>
+        <div class="row">
+          <button class="btn" id="chime">Play peace chime</button>
+          <a class="btn ghost" href="feel.html">Open feel studio</a>
+        </div>
+      </div>
+    </section>
+    <div class="grid" id="apps"></div>
+  </div>
+  <footer>
+    <span>Sausage Therapy · Noosa Dachshunds · Forevermore Farm</span>
+    <span>Inspect each masterpiece. Values persist in this browser.</span>
+  </footer>
+  <script src="fleet.js"></script>
+  <script>
+    const el = document.getElementById('apps');
+    el.innerHTML = APPS.map(a => `
+      <article class="card">
+        <div class="k">${a.model}</div>
+        <h2 class="h">${a.name}</h2>
+        <p class="p">${a.blurb}</p>
+        <div class="row"><span class="pill">${a.status}</span><span class="note">$${a.mrr}/mo seed</span></div>
+        <div class="bar" style="margin:12px 0"><i class="fill" style="width:${a.health}%"></i></div>
+        <a class="btn" href="${a.href}">Inspect app</a>
+      </article>`).join('');
+    function roll(){
+      const soft = +document.getElementById('soft').value;
+      const extra = APPS.reduce((s,a)=>s+a.mrr,0);
+      const camp = Number(localStorage.getItem('lm_campaign_boost')||0);
+      const pool = extra + camp + Math.round(soft*1.8);
+      document.getElementById('pool').textContent = '$'+pool.toLocaleString();
+      document.getElementById('rate').textContent = '$'+Math.round(pool/30);
+      document.getElementById('feelLine').textContent = soft>60 ? 'Warm light, slower pulse, kinder copy.' : 'Crisp command mode. Numbers first.';
+    }
+    document.getElementById('soft').oninput = roll;
+    document.getElementById('chime').onclick = () => {
+      const c = new (window.AudioContext||window.webkitAudioContext)();
+      const o = c.createOscillator(); const g = c.createGain();
+      o.type='sine'; o.frequency.value=528;
+      g.gain.value = (+document.getElementById('vol').value)/400;
+      o.connect(g); g.connect(c.destination); o.start(); setTimeout(()=>{o.stop();c.close()},900);
+    };
+    roll();
+  </script>
+</body>
+</html>

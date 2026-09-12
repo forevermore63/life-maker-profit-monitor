@@ -1,2 +1,5 @@
-# life-maker-profit-monitor
-Forevermore Life Maker profit monitor plus 10 passive income engines for Sausage Therapy
+# Life Maker Profit Monitor
+
+Master command deck for ten Forevermore / Sausage Therapy passive engines.
+
+Open index.html locally or deploy as a static site.
