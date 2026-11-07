@@ -19,14 +19,15 @@
       <div class="card">
         <div class="k">Endless money pool · peaceful balance</div>
         <h1 class="h">Master Life Maker Profit Monitor</h1>
-        <p class="p">Ten live revenue engines feeding one command deck. Toggle human-feel softness, push paid campaigns, and watch the pool compound toward a quieter world.</p>
+        <p class="p">Ten live revenue engines feeding one command deck. Enter real numbers from Stripe/Gumroad/affiliates. Toggle human-feel, push paid campaigns, watch the pool compound.</p>
         <div class="row">
-          <div><div class="k">Pool today (demo + live inputs)</div><div class="num" id="pool">$0</div></div>
+          <div><div class="k">Pool today (your real inputs)</div><div class="num" id="pool">$0</div></div>
           <div><div class="k">Daily run-rate</div><div class="num" id="rate">$0</div></div>
         </div>
+        <button class="btn" id="reset" style="margin-top:12px">Reset local data</button>
       </div>
       <div class="card">
-        <div class="k">Human feel</div>
+        <div class="k">Human feel optimizer</div>
         <p class="p" id="feelLine">Warm light, slower pulse, kinder copy.</p>
         <label>Softness <input id="soft" type="range" min="0" max="100" value="72"></label>
         <label>Chime volume <input id="vol" type="range" min="0" max="100" value="40"></label>
@@ -37,6 +38,12 @@
       </div>
     </section>
     <div class="grid" id="apps"></div>
+    <div class="card" style="margin-top:22px">
+      <div class="k">Real monetization setup</div>
+      <p class="p">Connect real tools: Create Stripe Payment Links, Gumroad products, or affiliate accounts (Amazon, ClickBank). Paste your real monthly totals into each app. For campaigns use Meta/Google Ads with tracking pixels. Data stays in your browser until you export.</p>
+      <a class="btn" href="https://dashboard.stripe.com/payment-links" target="_blank">Open Stripe Payment Links</a>
+      <a class="btn ghost" href="https://gumroad.com" target="_blank">Open Gumroad</a>
+    </div>
   </div>
   <footer>
     <span>Sausage Therapy · Noosa Dachshunds · Forevermore Farm</span>
@@ -50,15 +57,19 @@
         <div class="k">${a.model}</div>
         <h2 class="h">${a.name}</h2>
         <p class="p">${a.blurb}</p>
-        <div class="row"><span class="pill">${a.status}</span><span class="note">$${a.mrr}/mo seed</span></div>
+        <div class="row"><span class="pill">${a.status}</span><span class="note">Seed $${a.mrr}/mo</span></div>
         <div class="bar" style="margin:12px 0"><i class="fill" style="width:${a.health}%"></i></div>
-        <a class="btn" href="${a.href}">Inspect app</a>
+        <a class="btn" href="${a.href}">Inspect & log real income</a>
       </article>`).join('');
     function roll(){
       const soft = +document.getElementById('soft').value;
-      const extra = APPS.reduce((s,a)=>s+a.mrr,0);
+      let total = 0;
+      APPS.forEach(a => {
+        const saved = JSON.parse(localStorage.getItem('lm_app_'+a.id) || 'null');
+        total += saved ? (saved.price * saved.units) : a.mrr;
+      });
       const camp = Number(localStorage.getItem('lm_campaign_boost')||0);
-      const pool = extra + camp + Math.round(soft*1.8);
+      const pool = total + camp + Math.round(soft*1.8);
       document.getElementById('pool').textContent = '$'+pool.toLocaleString();
       document.getElementById('rate').textContent = '$'+Math.round(pool/30);
       document.getElementById('feelLine').textContent = soft>60 ? 'Warm light, slower pulse, kinder copy.' : 'Crisp command mode. Numbers first.';
@@ -70,6 +81,12 @@
       o.type='sine'; o.frequency.value=528;
       g.gain.value = (+document.getElementById('vol').value)/400;
       o.connect(g); g.connect(c.destination); o.start(); setTimeout(()=>{o.stop();c.close()},900);
+    };
+    document.getElementById('reset').onclick = () => {
+      if(confirm('Clear all local profit data?')) {
+        Object.keys(localStorage).filter(k=>k.startsWith('lm_')).forEach(k=>localStorage.removeItem(k));
+        location.reload();
+      }
     };
     roll();
   </script>
